@@ -1,0 +1,49 @@
+{
+  "name": "clocks",
+  "version": "0.0.1",
+  "description": "clocks",
+  "repository": {
+    "type": "git"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "ansi-regex": "^1.1.1",
+    "core-util-is": "^1.0.1",
+    "decompress": "^2.3.0",
+    "del": "^1.1.1",
+    "each-async": "^1.1.1",
+    "grunt": "^0.4.5",
+    "grunt-npm-install": "^0.2.0",
+    "gulp": ">=3.9.0",
+    "gulp-autoprefixer": "^2.1.0",
+    "gulp-cache": "^0.2.5",
+    "gulp-concat": "^2.4.3",
+    "gulp-connect": "^2.2.0",
+    "gulp-ignore": "^1.2.1",
+    "gulp-jshint": "^1.9.1",
+    "gulp-notify": "^2.2.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^1.1.0",
+    "inherits": "^2.0.1",
+    "lodash._isnative": "^2.4.1",
+    "lodash._setbinddata": "^2.4.1",
+    "lodash._shimkeys": "^2.4.1",
+    "lodash.isarguments": "^3.0.1",
+    "lodash.isarray": "^3.0.2",
+    "lodash.isobject": "^3.0.1",
+    "lru-cache": "^2.6.2",
+    "request": "^2.55.0",
+    "semver": "^4.3.3",
+    "sigmund": "^1.0.0",
+    "through2": "^0.6.5",
+    "uuid": "^2.0.1"
+  },
+  "dependencies": {
+    "glob": "^5.0.5",
+    "gulp-notify": "^2.2.0",
+    "lodash": "^3.7.0",
+    "minimatch": "^2.0.7",
+    "node-bourbon": "^4.2.3",
+    "node-neat": "^1.7.2"
+  }
+}

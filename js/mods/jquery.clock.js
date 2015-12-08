@@ -1,0 +1,124 @@
+/*
+ *  tickingClocks - v1.0.0
+ *
+ *  Made by Callum Hopkins
+ *  Under MIT License
+ */
+;(function ( $, window, document, undefined ) {
+
+	"use strict";
+
+	var tickingClocks = "tickingClocks",
+		defaults = {
+			timezone: 0,
+			clockSize: 100,
+			showSeconds: true,
+			clockBGColor: "#f5f5f5",
+			clockBorderWidth: 2,
+			clockBorderColor: "#444444",
+			clockSecondHandColor: "#444444",
+			clockMinuteHandColor: "#444444",
+			clockHourHandColor: "#444444",
+			clockSecondHandWidth: 3,
+			clockMinuteHandWidth: 4,
+			clockHourHandWidth: 5,
+			clockHandLength: 6,
+			clockPinColor: "#444444",
+			clockScaleRatio: 2,
+			clockPinSize: 3,
+			showTimeStrokes: true,
+			clockTimeScaleRatio: 0,
+			clockTimeStrokeColor: "#444444",
+			clockTimeStrokeWidth: 2
+		};
+
+
+	function Plugin ( element, options ) {
+		this.element = element;
+
+		this.settings = $.extend( {}, defaults, options );
+		if(this.settings.clockTimeScaleRatio <=0 ){
+			this.settings.clockTimeScaleRatio = this.settings.clockSize/150
+		}
+		if(this.settings.clockPinSize <=0 ){
+			this.settings.clockPinSize = this.settings.clockTimeScaleRatio*2
+		}
+		this._defaults = defaults;
+		this._name = tickingClocks;
+		this.parts = []
+		this.init();
+	}
+
+	$.extend(Plugin.prototype, {
+		init: function () {
+			var $that = this;
+			this.setup_clock(this.settings,this);
+			this.draw_clock(this.settings.timezone,this);
+			setInterval( function(){
+				$that.draw_clock($that.settings.timezone,$that)
+			},1000);
+		},
+
+		setup_clock: function (settings,elm){
+		  var canvas = Raphael(elm.element.id,settings.clockSize, settings.clockSize);
+		  var clock = canvas.circle((settings.clockSize/2),(settings.clockSize/2),((settings.clockSize/2)-2));
+		  clock.attr({"fill":settings.clockBGColor,"stroke":settings.clockBorderColor,"stroke-width":settings.clockBorderWidth})
+		  if(settings.showTimeStrokes){
+			  var hour_sign;
+			  for(var i=0;i<12;i++){
+			    var start_x = (settings.clockSize/2)+Math.round((((settings.clockSize/2)/2)+(settings.clockSize/10))*Math.cos(30*i*Math.PI/180));
+			    var start_y = (settings.clockSize/2)+Math.round((((settings.clockSize/2)/2)+(settings.clockSize/10))*Math.sin(30*i*Math.PI/180));
+			    var end_x = (settings.clockSize/2)+Math.round(((settings.clockSize/2)-(settings.clockSize/10))*Math.cos(30*i*Math.PI/180));
+			    var end_y = (settings.clockSize/2)+Math.round(((settings.clockSize/2)-(settings.clockSize/10))*Math.sin(30*i*Math.PI/180));  
+			    hour_sign = canvas.path("M"+start_x+" "+start_y+"L"+end_x+" "+end_y);
+			    hour_sign.attr({stroke: settings.clockTimeStrokeColor, "stroke-width": settings.clockTimeStrokeWidth})
+			  }
+		  }
+		  this.parts.hour_hand = canvas.path("M"+(settings.clockSize/2)+" "+(settings.clockSize/2)+"L"+(settings.clockSize/2)+" "+(((settings.clockSize/settings.clockHandLength)/0.8)));
+		  this.parts.hour_hand.attr({stroke: settings.clockHourHandColor, "stroke-width": settings.clockHourHandWidth});
+		  this.parts.minute_hand = canvas.path("M"+(settings.clockSize/2)+" "+(settings.clockSize/2)+"L"+(settings.clockSize/2)+" "+(((settings.clockSize/settings.clockHandLength)/0.9)));
+		  this.parts.minute_hand.attr({stroke: settings.clockMinuteHandColor, "stroke-width": settings.clockMinuteHandWidth});
+		  if(settings.showSeconds){
+		  	this.parts.second_hand = canvas.path("M"+(settings.clockSize/2)+" "+((settings.clockSize/2)+(settings.clockTimeScaleRatio*3))+"L"+(settings.clockSize/2)+" "+(settings.clockSize/settings.clockHandLength));
+		  	this.parts.second_hand.attr({stroke: settings.clockSecondHandColor, "stroke-width": settings.clockSecondHandWidth}); 
+		  }
+		  this.parts.pin = canvas.circle((settings.clockSize/2), (settings.clockSize/settings.clockScaleRatio), (settings.clockSize/3)/10);
+		  this.parts.pin.attr({"fill": settings.clockPinColor, "stroke":settings.clockPinColor} );
+		},
+
+		draw_clock: function (timezone, elm){
+		  var now = new Date();
+		  if (now.dst()) { timezone-- }
+		  var hours = now.getUTCHours() + timezone;
+		  var minutes = now.getUTCMinutes();
+		  if(elm.settings.showSeconds){
+		  	var seconds = now.getUTCSeconds();
+		  }
+		  this.parts.hour_hand.rotate(30*hours+(minutes/2.5), (elm.settings.clockSize/elm.settings.clockScaleRatio), (elm.settings.clockSize/elm.settings.clockScaleRatio));
+		  this.parts.minute_hand.rotate(6*minutes, (elm.settings.clockSize/elm.settings.clockScaleRatio), (elm.settings.clockSize/elm.settings.clockScaleRatio));
+		  if(elm.settings.showSeconds){
+		  	this.parts.second_hand.rotate(6*seconds, (elm.settings.clockSize/elm.settings.clockScaleRatio), (elm.settings.clockSize/elm.settings.clockScaleRatio));
+		  }
+		}
+
+	});
+
+	$.fn[ tickingClocks ] = function ( options ) {
+		return this.each(function() {
+			if ( !$.data( this, "plugin_" + tickingClocks ) ) {
+				$.data( this, "plugin_" + tickingClocks, new Plugin( this, options ) );
+			}
+		});
+	};
+
+})( jQuery, window, document );
+
+Date.prototype.stdTimezoneOffset = function() {
+    var jan = new Date(this.getFullYear(), 0, 1);
+    var jul = new Date(this.getFullYear(), 6, 1);
+    return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+}
+
+Date.prototype.dst = function() {
+    return this.getTimezoneOffset() < this.stdTimezoneOffset();
+}
