@@ -19,15 +19,14 @@
 			clockSecondHandColor: "#444444",
 			clockMinuteHandColor: "#444444",
 			clockHourHandColor: "#444444",
-			clockSecondHandWidth: 3,
-			clockMinuteHandWidth: 4,
-			clockHourHandWidth: 5,
+			clockSecondHandWidth: 0,
+			clockMinuteHandWidth: 0,
+			clockHourHandWidth: 0,
 			clockHandLength: 6,
 			clockPinColor: "#444444",
 			clockScaleRatio: 2,
-			clockPinSize: 3,
+			clockPinSize: 0,
 			showTimeStrokes: true,
-			clockTimeScaleRatio: 0,
 			clockTimeStrokeColor: "#444444",
 			clockTimeStrokeWidth: 2
 		};
@@ -37,11 +36,20 @@
 		this.element = element;
 
 		this.settings = $.extend( {}, defaults, options );
-		if(this.settings.clockTimeScaleRatio <=0 ){
-			this.settings.clockTimeScaleRatio = this.settings.clockSize/150
+		if(this.settings.clockSecondHandWidth <= 0){
+			this.settings.clockSecondHandWidth = this.settings.clockSize/75
 		}
-		if(this.settings.clockPinSize <=0 ){
-			this.settings.clockPinSize = this.settings.clockTimeScaleRatio*2
+		if(this.settings.clockMinuteHandWidth <= 0){
+			this.settings.clockMinuteHandWidth = this.settings.clockSize/50
+		}
+		if(this.settings.clockHourHandWidth <= 0){
+			this.settings.clockHourHandWidth = this.settings.clockSize/35
+		}
+		if(this.settings.clockPinSize <= 0){
+			this.settings.clockPinSize = this.settings.clockSize/40
+		}
+		if(this.settings.clockPinSize <= 0){
+			this.settings.clockPinSize = this.settings.clockSize/40
 		}
 		this._defaults = defaults;
 		this._name = tickingClocks;
@@ -66,23 +74,23 @@
 		  if(settings.showTimeStrokes){
 			  var hour_sign;
 			  for(var i=0;i<12;i++){
-			    var start_x = (settings.clockSize/2)+Math.round((((settings.clockSize/2)/2)+(settings.clockSize/10))*Math.cos(30*i*Math.PI/180));
-			    var start_y = (settings.clockSize/2)+Math.round((((settings.clockSize/2)/2)+(settings.clockSize/10))*Math.sin(30*i*Math.PI/180));
-			    var end_x = (settings.clockSize/2)+Math.round(((settings.clockSize/2)-(settings.clockSize/10))*Math.cos(30*i*Math.PI/180));
-			    var end_y = (settings.clockSize/2)+Math.round(((settings.clockSize/2)-(settings.clockSize/10))*Math.sin(30*i*Math.PI/180));  
+			    var start_x = (settings.clockSize/2)+Math.round((((settings.clockSize/2)/2)+(settings.clockSize/5))*Math.cos(30*i*Math.PI/180));
+			    var start_y = (settings.clockSize/2)+Math.round((((settings.clockSize/2)/2)+(settings.clockSize/5))*Math.sin(30*i*Math.PI/180));
+			    var end_x = (settings.clockSize/2)+Math.round(((settings.clockSize/2)-(settings.clockSize/12))*Math.cos(30*i*Math.PI/180));
+			    var end_y = (settings.clockSize/2)+Math.round(((settings.clockSize/2)-(settings.clockSize/12))*Math.sin(30*i*Math.PI/180));  
 			    hour_sign = canvas.path("M"+start_x+" "+start_y+"L"+end_x+" "+end_y);
 			    hour_sign.attr({stroke: settings.clockTimeStrokeColor, "stroke-width": settings.clockTimeStrokeWidth})
 			  }
 		  }
-		  this.parts.hour_hand = canvas.path("M"+(settings.clockSize/2)+" "+(settings.clockSize/2)+"L"+(settings.clockSize/2)+" "+(((settings.clockSize/settings.clockHandLength)/0.8)));
+		  this.parts.hour_hand = canvas.path("M"+(settings.clockSize/2)+" "+(settings.clockSize/2)+"L"+(settings.clockSize/2)+" "+(((settings.clockSize/settings.clockHandLength)/0.3)));
 		  this.parts.hour_hand.attr({stroke: settings.clockHourHandColor, "stroke-width": settings.clockHourHandWidth});
-		  this.parts.minute_hand = canvas.path("M"+(settings.clockSize/2)+" "+(settings.clockSize/2)+"L"+(settings.clockSize/2)+" "+(((settings.clockSize/settings.clockHandLength)/0.9)));
+		  this.parts.minute_hand = canvas.path("M"+(settings.clockSize/2)+" "+(settings.clockSize/2)+"L"+(settings.clockSize/2)+" "+(((settings.clockSize/settings.clockHandLength)/0.6)));
 		  this.parts.minute_hand.attr({stroke: settings.clockMinuteHandColor, "stroke-width": settings.clockMinuteHandWidth});
 		  if(settings.showSeconds){
-		  	this.parts.second_hand = canvas.path("M"+(settings.clockSize/2)+" "+((settings.clockSize/2)+(settings.clockTimeScaleRatio*3))+"L"+(settings.clockSize/2)+" "+(settings.clockSize/settings.clockHandLength));
+		  	this.parts.second_hand = canvas.path("M"+(settings.clockSize/2)+" "+((settings.clockSize/2))+"L"+(settings.clockSize/2)+" "+(settings.clockSize/settings.clockHandLength));
 		  	this.parts.second_hand.attr({stroke: settings.clockSecondHandColor, "stroke-width": settings.clockSecondHandWidth}); 
 		  }
-		  this.parts.pin = canvas.circle((settings.clockSize/2), (settings.clockSize/settings.clockScaleRatio), (settings.clockSize/3)/10);
+		  this.parts.pin = canvas.circle((settings.clockSize/2), (settings.clockSize/2), this.settings.clockPinSize);
 		  this.parts.pin.attr({"fill": settings.clockPinColor, "stroke":settings.clockPinColor} );
 		},
 
