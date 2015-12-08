@@ -4,46 +4,174 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		<title>clocks</title>
+		<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500,700' rel='stylesheet' type='text/css'>
+		<style>
+			.clock{
+				display:block;
+				text-align: left;
+				float:left;
+			}
+
+			.clock .theClock{
+				text-align: center;
+				width:100%;
+				display: block;
+				padding-right:20px;
+			}
+
+			.clock p{
+				display:block;
+				text-align: center;
+				width:100%;
+				margin:10px auto;
+				font-size: 25px;
+				font-family:'Roboto', Helvetica, Arial, sans-serif;
+			}
+
+			.enabled{
+				background:#444;
+			}
+
+			.disable{
+				background:#ccc;
+			}
+
+			p.notice{
+				font-family:'Roboto', Helvetica, Arial, sans-serif;
+				font-size:20px;
+				clear:both;
+				padding-top:30px;
+			}
+
+			.cube{
+				width:30px;
+				height:30px;
+				display:block;
+			}
+
+			.key{
+				clear:both;
+				display: table;
+				padding-top:20px;
+			}
+
+			.key > *{
+				display: table-cell;
+				vertical-align: middle;
+			}
+
+			.key p{
+				font-family:'Roboto', Helvetica, Arial, sans-serif;
+				padding-left:10px;
+			}
+		</style>
 	</head>
 	<body>
 
-		<div id="clock_id"></div>
-		<div id="clock_id2"></div>
-		<div id="clock_id3"></div>
+		<div class="clock">
+			<p>UK</p>
+			<div class="theClock" id="clock_id"></div>
+		</div>
+		<div class="clock">
+			<p>USA</p>
+			<div class="theClock" id="clock_id2"></div>
+		</div>
+		<div class="clock">
+			<p>UAE</p>
+			<div class="theClock" id="clock_id3"></div>
+		</div>
+		<div class="clock">
+			<p>AFR</p>
+			<div class="theClock" id="clock_id4"></div>
+		</div>
+		<div class="clock">
+			<p>AUS</p>
+			<div class="theClock" id="clock_id5"></div>
+		</div>
+
+		<p class="notice">Offices open hours: 8am-6pm in each region</p>
+
+		<div class="key">
+			<div class="enabled cube"></div>
+			<p>Office Open</p>
+		</div>
+
+		<div class="key">
+			<div class="disable cube"></div>
+			<p>Office Closed</p>
+		</div>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 		<script src="js/dist/all.min.js"></script>
 		<script type="text/javascript">
 			$('#clock_id').tickingClocks({
-				clockSize:40,
+				clockSize:150,
 				clockHandLength: 15,
-				showTimeStrokes:false,
-				showSeconds:false,
 				clockBGColor: "#fff",
-				clockBorderWidth: 1
+				onEachSecond: function(now, element, hours, minutes, seconds, settings){
+					disable_clock(settings,hours,element)
+            	}
 			});
 			$('#clock_id2').tickingClocks({
 				timezone: -6,
-				clockSize: 40,
+				clockSize: 150,
 				clockHandLength: 9,
-				showTimeStrokes:false,
-				showSeconds:false,
-				clockMinuteHandWidth: 1,
-				clockHourHandWidth: 2,
 				clockBGColor: "#fff",
-				clockBorderWidth: 1
+				onEachSecond: function(now, element, hours, minutes, seconds, settings){
+					disable_clock(settings,hours,element)
+            	}
 			});
 			$('#clock_id3').tickingClocks({
 				timezone: +4,
-				clockSize: 40,
+				clockSize: 150,
 				clockHandLength: 9,
-				showTimeStrokes:false,
-				showSeconds:false,
-				clockMinuteHandWidth: 1,
-				clockHourHandWidth: 2,
 				clockBGColor: "#fff",
-				clockBorderWidth: 1
+				onEachSecond: function(now, element, hours, minutes, seconds, settings){
+					disable_clock(settings,hours,element)
+            	}
 			});
+			$('#clock_id4').tickingClocks({
+				timezone: +4,
+				clockSize: 150,
+				clockHandLength: 9,
+				clockBGColor: "#fff",
+				onEachSecond: function(now, element, hours, minutes, seconds, settings){
+					disable_clock(settings,hours,element)
+            	}
+			});
+			$('#clock_id5').tickingClocks({
+				timezone: -12,
+				clockSize: 150,
+				clockHandLength: 9,
+				clockBGColor: "#fff",
+				onEachSecond: function(now, element, hours, minutes, seconds, settings){
+					disable_clock(settings,hours,element)
+            	}
+			});
+
+			function disable_clock(settings, timeCheck, element){
+			    if(timeCheck >= 18 || timeCheck <= 7){
+   					settings.parts.clock.attr({"stroke":'#ccc'})
+   					settings.parts.minute_hand.attr({"stroke": '#ccc'})
+   					settings.parts.hour_hand.attr({"stroke": '#ccc'})
+   					settings.parts.second_hand.attr({"stroke": '#ccc'})
+   					settings.parts.pin.attr({"stroke": '#ccc', "fill": '#ccc'})
+   					for(var i=0;i<12;i++){
+   						settings.parts.hour_sign[i].attr({"stroke": '#ccc'})
+   					}
+   					$(element.element).parent().find("p").css('color', '#ccc')
+        		}else{
+        			settings.parts.clock.attr({"stroke":'#444'})
+   					settings.parts.minute_hand.attr({"stroke": '#444'})
+   					settings.parts.hour_hand.attr({"stroke": '#444'})
+   					settings.parts.second_hand.attr({"stroke": '#444'})
+   					settings.parts.pin.attr({"stroke": '#444', "fill": '#444'})
+   					for(var i=0;i<12;i++){
+   						settings.parts.hour_sign[i].attr({"stroke": '#444'})
+   					}
+   					$(element.element).parent().find("p").css('color', '#444')
+        		}
+			}
 		</script>
 	</body>
 </html>
