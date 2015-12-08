@@ -32,6 +32,7 @@
 			clockMiniTimeStrokeColor: "#949494",
 			clockMiniTimeStrokeWidth: 1,
 			showMiniSecs: false,
+			showMilliSeconds: false,
             onEachSecond: function(now, element, hours, minutes, seconds, settings){
             	console.log(now)
             }
@@ -70,7 +71,7 @@
 			this.draw_clock(this.settings.timezone,this);
 			setInterval( function(){
 				$that.draw_clock($that.settings.timezone,$that)
-			},1000);
+			},100);
 		},
 
 		setup_clock: function (settings,elm){
@@ -131,9 +132,12 @@
 		  if(elm.settings.showSeconds){
 		  	var seconds = now.getUTCSeconds();
 		  }
+		  var milliseconds = now.getMilliseconds();
 		  this.parts.hour_hand.rotate(30*hours+(minutes/2.5), (elm.settings.clockSize/2), (elm.settings.clockSize/2));
 		  this.parts.minute_hand.rotate(6*minutes, (elm.settings.clockSize/2), (elm.settings.clockSize/2));
-		  if(elm.settings.showSeconds){
+		  if(elm.settings.showMilliSeconds){
+		  	this.parts.second_hand.rotate((milliseconds/170)+(6*seconds), (elm.settings.clockSize/2), (elm.settings.clockSize/2));
+		  }else if(elm.settings.showSeconds){
 		  	this.parts.second_hand.rotate(6*seconds, (elm.settings.clockSize/2), (elm.settings.clockSize/2));
 		  }
 		  elm.settings.onEachSecond(now, elm, hours, minutes, seconds, this)
